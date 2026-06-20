@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChefFlow AI 🍳 | Smart Cooking Planner &amp; Active To-Do List</title>
+  <meta name="description" content="Generate personalized, budget-friendly cooking plans and interactive checklists based on your busy day. Keep track of ingredients, substitutions, and timers in real-time.">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-logo">
+        <span class="logo-emoji">🍳</span>
+        <h1>ChefFlow <span class="gradient-text">AI</span></h1>
+      </div>
+      <p class="header-tagline">Smart Cooking Planner &amp; Active To-Do List</p>
+      <div class="header-controls">
+        <button id="btn-reset" class="btn btn-secondary btn-iconic" aria-label="Reset Application">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Reset Plan
+        </button>
+      </div>
+    </header>
+
+    <div class="app-layout">
+      <!-- Sidebar / Configuration -->
+      <aside class="sidebar-panel">
+        <div class="card panel-card">
+          <div class="panel-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            <h2>Configure Your Day</h2>
+          </div>
+          
+          <form id="form-planner" class="planner-form" aria-label="Meal Plan Generator Settings">
+            <!-- Day Description -->
+            <div class="form-group">
+              <label for="input-day-desc">Describe your day:</label>
+              <textarea id="input-day-desc" placeholder="e.g., I have a busy day with back-to-back meetings and want something quick, but high protein for dinner..." rows="3"></textarea>
+              
+              <!-- Quick Suggestions tags -->
+              <div class="quick-tags-container">
+                <span class="quick-tag-label">Quick presets:</span>
+                <div class="quick-tags">
+                  <button type="button" class="quick-tag" data-text="I have a busy day and meetings, need something quick and easy">⚡ Busy Day</button>
+                  <button type="button" class="quick-tag" data-text="Quiet weekend, looking for high protein healthy food">🍃 Healthy Weekend</button>
+                  <button type="button" class="quick-tag" data-text="Budget friendly vegetarian meals for a cold rainy day">☔ Cozy &amp; Cheap</button>
+                  <button type="button" class="quick-tag" data-text="Intense workout day, need high protein keto meal prep">🏋️‍♂️ Gym Fuel</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Target Budget -->
+            <div class="form-group">
+              <div class="label-wrapper">
+                <label for="input-budget">Target Daily Budget:</label>
+                <span id="budget-value" class="badge-value">₹1200.00</span>
+              </div>
+              <input type="range" id="input-budget" min="200" max="4000" step="50" value="1200" aria-valuemin="200" aria-valuemax="4000" aria-valuenow="1200">
+              <span class="helper-text">Allocated evenly across selected meals.</span>
+            </div>
+
+            <!-- Dietary Restrictions checkboxes -->
+            <div class="form-group">
+              <label>Dietary Guidelines:</label>
+              <div class="chips-group">
+                <label class="chip-label">
+                  <input type="checkbox" name="restrictions" value="vegan" class="visually-hidden">
+                  <span class="chip-custom">Vegan</span>
+                </label>
+                <label class="chip-label">
+                  <input type="checkbox" name="restrictions" value="vegetarian" class="visually-hidden">
+                  <span class="chip-custom">Vegetarian</span>
+                </label>
+                <label class="chip-label">
+                  <input type="checkbox" name="restrictions" value="gluten-free" class="visually-hidden">
+                  <span class="chip-custom">Gluten-Free</span>
+                </label>
+                <label class="chip-label">
+                  <input type="checkbox" name="restrictions" value="keto" class="visually-hidden">
+                  <span class="chip-custom">Keto</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Meals Needed -->
+            <div class="form-group">
+              <label>Meals to Include:</label>
+              <div class="checkbox-group">
+                <label class="checkbox-custom">
+                  <input type="checkbox" name="meals" value="breakfast" checked>
+                  <span>Breakfast</span>
+                </label>
+                <label class="checkbox-custom">
+                  <input type="checkbox" name="meals" value="lunch" checked>
+                  <span>Lunch</span>
+                </label>
+                <label class="checkbox-custom">
+                  <input type="checkbox" name="meals" value="dinner" checked>
+                  <span>Dinner</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Planner Mode (Local/AI) -->
+            <div class="form-group">
+              <div class="label-wrapper">
+                <label>Planning Engine:</label>
+              </div>
+              <div class="toggle-switch-wrapper">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="toggle-ai-engine">
+                  <span class="slider round"></span>
+                </label>
+                <span id="engine-status" class="toggle-status-text">Smart Heuristics (Local)</span>
+              </div>
+
+              <!-- Collapsible AI settings -->
+              <div id="ai-settings-drawer" class="collapsible-drawer hidden">
+                <div class="ai-config-box">
+                  <div class="form-group">
+                    <label for="ai-provider">AI Provider:</label>
+                    <select id="ai-provider">
+                      <option value="huggingface">Hugging Face Inference API</option>
+                      <option value="ollama">Ollama (Local Server)</option>
+                      <option value="openrouter">OpenRouter API</option>
+                    </select>
+                  </div>
+                  <div class="form-group" id="group-ai-endpoint">
+                    <label for="ai-endpoint">API Endpoint / Host:</label>
+                    <input type="text" id="ai-endpoint" value="https://api-inference.huggingface.co/models/" placeholder="e.g. http://localhost:11434">
+                  </div>
+                  <div class="form-group" id="group-ai-token">
+                    <label for="ai-token">API Token / Secret Key:</label>
+                    <input type="password" id="ai-token" placeholder="Enter HuggingFace API key">
+                  </div>
+                  <div class="form-group">
+                    <label for="ai-model">Model Name:</label>
+                    <input type="text" id="ai-model" value="meta-llama/Meta-Llama-3-8B-Instruct" placeholder="e.g. llama3">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" id="btn-generate" class="btn btn-primary btn-block">
+              <span class="btn-text">Generate Cooking Plan</span>
+              <span class="btn-spinner hidden"></span>
+            </button>
+          </form>
+        </div>
+      </aside>
+
+      <!-- Main Display Panel -->
+      <main class="main-panel">
+        <!-- Tabs Bar -->
+        <nav class="tabs-bar" role="tablist" aria-label="Meal Plan Options">
+          <button class="tab-button active" id="tab-menu" role="tab" aria-selected="true" aria-controls="panel-menu">
+            <span class="tab-icon">🍽️</span>
+            <span class="tab-text">Today's Menu</span>
+          </button>
+          <button class="tab-button" id="tab-budget" role="tab" aria-selected="false" aria-controls="panel-budget">
+            <span class="tab-icon">💰</span>
+            <span class="tab-text">Budget Guard</span>
+            <span id="budget-status-dot" class="status-dot dot-success"></span>
+          </button>
+          <button class="tab-button" id="tab-shopping" role="tab" aria-selected="false" aria-controls="panel-shopping">
+            <span class="tab-icon">🛒</span>
+            <span class="tab-text">Shopping List</span>
+            <span id="shopping-badge" class="badge">0</span>
+          </button>
+          <button class="tab-button" id="tab-cooking" role="tab" aria-selected="false" aria-controls="panel-cooking">
+            <span class="tab-icon">🍳</span>
+            <span class="tab-text">Cooking Mode</span>
+            <span id="cooking-badge" class="badge">0%</span>
+          </button>
+        </nav>
+
+        <!-- Tab Content Panes -->
+        <div class="tab-content-container">
+          <!-- Empty State (Shown initially) -->
+          <div id="empty-state" class="empty-state">
+            <div class="empty-state-icon">🍲</div>
+            <h2>Let's Plan Your Meal Day!</h2>
+            <p>Describe your day or choose a preset in the panel on the left. We'll build a custom culinary strategy tailored to your schedule, diet, and budget constraints.</p>
+            <div class="empty-state-tips">
+              <div class="tip-card">
+                <h3>⚡ Busy Day?</h3>
+                <p>We'll match you with fast, low-effort recipes under 15 minutes.</p>
+              </div>
+              <div class="tip-card">
+                <h3>💰 Budget Tight?</h3>
+                <p>We flag feasibility and give tips to trim ingredient costs.</p>
+              </div>
+              <div class="tip-card">
+                <h3>🔄 Smart Subs</h3>
+                <p>Toggle ingredients instantly for allergies or savings.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 1: Today's Menu -->
+          <section id="panel-menu" class="tab-pane active" role="tabpanel" aria-labelledby="tab-menu">
+            <div class="panel-section-header">
+              <h2>Your Custom Culinary Layout</h2>
+              <div id="ai-explanation" class="explanation-box"></div>
+            </div>
+
+            <!-- Recipe Grid -->
+            <div id="recipe-grid" class="recipe-grid">
+              <!-- Cards dynamically inserted here -->
+            </div>
+          </section>
+
+          <!-- Tab 2: Budget Guard -->
+          <section id="panel-budget" class="tab-pane hidden" role="tabpanel" aria-labelledby="tab-budget">
+            <div class="budget-dashboard">
+              <div class="card budget-meter-card">
+                <h3>Daily Spending Analytics</h3>
+                
+                <div class="meter-wrapper">
+                  <svg viewBox="0 0 100 50" class="gauge">
+                    <path class="gauge-bg" d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#223049" stroke-width="8" stroke-linecap="round"></path>
+                    <path id="gauge-fill" class="gauge-fill success" d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="currentColor" stroke-dasharray="125.6" stroke-dashoffset="125.6" stroke-width="8" stroke-linecap="round"></path>
+                  </svg>
+                  <div class="gauge-text">
+                    <span id="budget-spent-text" class="spent-amount">₹0.00</span>
+                    <span class="limit-label">Limit: <span id="budget-limit-text">₹1200.00</span></span>
+                  </div>
+                </div>
+
+                <div id="budget-status-alert" class="alert-box">
+                  <!-- Custom health status message -->
+                </div>
+              </div>
+
+              <!-- Dynamic Savings Tips -->
+              <div class="card savings-tips-card">
+                <div class="tips-header">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-warning"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                  <h3>Smart Cost Trimming Suggestions</h3>
+                </div>
+                <p class="tips-intro">Save money without compromising on flavor by applying these swaps:</p>
+                <div id="savings-tips-list" class="savings-tips-list">
+                  <!-- Savings tips injected here -->
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Tab 3: Shopping List -->
+          <section id="panel-shopping" class="tab-pane hidden" role="tabpanel" aria-labelledby="tab-shopping">
+            <div class="shopping-layout">
+              <div class="panel-section-header row-layout">
+                <div>
+                  <h2>Ingredient Shopping List</h2>
+                  <p>Check off ingredients as you purchase or fetch them.</p>
+                </div>
+                <div class="shopping-progress-wrapper">
+                  <span id="shopping-progress-text">0 / 0 Items</span>
+                  <div class="progress-bar-bg">
+                    <div id="shopping-progress-bar" class="progress-bar-fill" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="shopping-categories" class="shopping-categories">
+                <!-- Grouped categories dynamic loading -->
+              </div>
+            </div>
+          </section>
+
+          <!-- Tab 4: Cooking Mode -->
+          <section id="panel-cooking" class="tab-pane hidden" role="tabpanel" aria-labelledby="tab-cooking">
+            <div class="cooking-layout">
+              <div class="panel-section-header row-layout">
+                <div>
+                  <h2>Kitchen Cooking Mode</h2>
+                  <p>Step-by-step guidance for today's dishes.</p>
+                </div>
+                <div class="cooking-progress-wrapper">
+                  <span id="cooking-progress-text">Plan Progress: 0%</span>
+                  <div class="progress-bar-bg">
+                    <div id="cooking-progress-bar" class="progress-bar-fill" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="cooking-recipe-blocks" class="cooking-recipe-blocks">
+                <!-- Dynamic steps container -->
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Audio element for timer alarm -->
+  <audio id="audio-timer-alert" preload="auto">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-84.wav" type="audio/wav">
+  </audio>
+  <!-- Main Application Script -->
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
