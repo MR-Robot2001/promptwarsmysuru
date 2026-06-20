@@ -1298,3 +1298,10 @@ select:focus-visible,
     display: none;
   }
 }
+
+/* Safety trigger warning styles for input validation */
+.input-safety-alert {
+  border-color: var(--color-danger) !important;
+  box-shadow: 0 0 10px rgba(244, 63, 94, 0.45) !important;
+  outline: none !important;
+}

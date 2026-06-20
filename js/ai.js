@@ -1,5 +1,5 @@
 // AI Engine for Mental Wellness Tracker (MWT)
-import { db } from './db.js';
+import { db, DEFAULT_OR_KEY } from './db.js';
 
 // --- Local CalmCompanion Simulation Engine ---
 const SIMULATED_TRIGGERS = [
@@ -273,7 +273,17 @@ async function callGeminiAPI(systemInstruction, prompt, apiKey, jsonMode = false
   }
 }
 
-// --- Exported AI Methods ---
+// Robust list of safety / self-harm indicators
+export const SAFETY_KEYWORDS = [
+  'suicide', 'suicidal', 'suiciding', 'kill myself', 'killing myself', 'end my life', 'ending my life', 
+  'want to die', 'wishing to die', 'wanna die', 'give up on life', 'giving up on life', 'self-harm', 
+  'self harm', 'cut myself', 'cutting myself', 'hurt myself', 'hurting myself', 'poison myself', 
+  'overdose', 'hang myself', 'hanging myself', 'jump off', 'jumping off', 'take my life', 'taking my life', 
+  'better off dead', 'dont want to live', 'don\'t want to live', 'not want to live', 'end it all', 
+  'ending it all', 'worthless life', 'no point living', 'no point in living', 'wish i was dead', 
+  'wishing i was dead', 'want to end it', 'wanting to end it', 'suicide note', 'kill my self', 'die today'
+];
+
 // --- Exported AI Methods ---
 export const ai = {
   /**
@@ -286,18 +296,8 @@ export const ai = {
     const settings = db.getSettings();
     const profile = db.getProfile() || { name: 'Aspirant', exam: 'Competitive Exams' };
 
-    // Robust list of safety / self-harm indicators
-    const safetyKeywords = [
-      'suicide', 'suicidal', 'suiciding', 'kill myself', 'killing myself', 'end my life', 'ending my life', 
-      'want to die', 'wishing to die', 'wanna die', 'give up on life', 'giving up on life', 'self-harm', 
-      'self harm', 'cut myself', 'cutting myself', 'hurt myself', 'hurting myself', 'poison myself', 
-      'overdose', 'hang myself', 'hanging myself', 'jump off', 'jumping off', 'take my life', 'taking my life', 
-      'better off dead', 'dont want to live', 'don\'t want to live', 'not want to live', 'end it all', 
-      'ending it all', 'worthless life', 'no point living', 'no point in living', 'wish i was dead', 
-      'wishing i was dead', 'want to end it', 'wanting to end it', 'suicide note', 'kill my self', 'die today'
-    ];
     const lowercaseText = text.toLowerCase();
-    const isSafetyTriggered = safetyKeywords.some(keyword => lowercaseText.includes(keyword));
+    const isSafetyTriggered = SAFETY_KEYWORDS.some(keyword => lowercaseText.includes(keyword));
 
     const systemInstruction = `You are an empathetic, professional AI mental wellness coach assisting a student preparing for high-stakes exams (User's Exam: ${profile.exam}). 
 Analyze the student's journal entry. Provide a supportive analysis containing:
@@ -320,7 +320,7 @@ Logged Mood Rating: ${userMood}/5 (where 1 is highly stressed/low and 5 is calm/
     let result = null;
 
     if (settings.provider === 'openrouter') {
-      const apiKey = settings.openRouterKey || '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';
+      const apiKey = settings.openRouterKey || DEFAULT_OR_KEY;
       const model = settings.openRouterModel || 'meta-llama/llama-3.3-70b-instruct:free';
       const messages = [
         { role: 'system', content: systemInstruction },
@@ -379,16 +379,7 @@ Logged Mood Rating: ${userMood}/5 (where 1 is highly stressed/low and 5 is calm/
 
     // Dynamic safety check list for UI alert formatting
     const latestMessage = messageHistory[messageHistory.length - 1].content.toLowerCase();
-    const safetyKeywords = [
-      'suicide', 'suicidal', 'suiciding', 'kill myself', 'killing myself', 'end my life', 'ending my life', 
-      'want to die', 'wishing to die', 'wanna die', 'give up on life', 'giving up on life', 'self-harm', 
-      'self harm', 'cut myself', 'cutting myself', 'hurt myself', 'hurting myself', 'poison myself', 
-      'overdose', 'hang myself', 'hanging myself', 'jump off', 'jumping off', 'take my life', 'taking my life', 
-      'better off dead', 'dont want to live', 'don\'t want to live', 'not want to live', 'end it all', 
-      'ending it all', 'worthless life', 'no point living', 'no point in living', 'wish i was dead', 
-      'wishing i was dead', 'want to end it', 'wanting to end it', 'suicide note', 'kill my self', 'die today'
-    ];
-    const isSafetyTriggered = safetyKeywords.some(keyword => latestMessage.includes(keyword));
+    const isSafetyTriggered = SAFETY_KEYWORDS.some(keyword => latestMessage.includes(keyword));
 
     const systemInstruction = `You are "CalmCompanion", an empathetic, supportive, and safe digital companion for students preparing for competitive exams like JEE, NEET, UPSC, GATE, CAT, and Board Exams.
 The student's name is ${profile.name} and they are studying for ${profile.exam}.
@@ -400,7 +391,7 @@ Guidelines:
 5. If the user indicates severe depression, self-harm, or suicidal ideation, you must instantly express support, prioritize safety, and share Indian mental health helpline resources (AASRA: 91-9820466726, Vandrevala: 91-9999666555).`;
 
     if (settings.provider === 'openrouter') {
-      const apiKey = settings.openRouterKey || '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';
+      const apiKey = settings.openRouterKey || DEFAULT_OR_KEY;
       const model = settings.openRouterModel || 'meta-llama/llama-3.3-70b-instruct:free';
       const messages = [
         { role: 'system', content: systemInstruction },

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "An empathetic Generative AI-powered mental wellness companion and dashboard designed specifically for competitive exam aspirants.",
   "main": "index.html",
+  "type": "module",
   "scripts": {
     "start": "npx http-server ./ -p 3000 -o",
     "test": "echo \"Browser-based unit tests can be executed interactively inside the diagnostics tab of the web application. Run npm start and go to the Diagnostics section.\""

@@ -86,6 +86,7 @@ export const tests = {
 
     // 3. AI Tests
     await runTest('AI Engine: Simulated Analysis triggers', async () => {
+      db.saveSettings({ provider: 'simulated' });
       // Simulate input related to test/mock exam and sleeplessness
       const text = 'I am so scared of my upcoming mock test, and I could not sleep at all last night.';
       const analysis = await ai.analyzeJournal(text, 2);
@@ -97,6 +98,7 @@ export const tests = {
     });
 
     await runTest('AI Engine: Safety triggers redirection', async () => {
+      db.saveSettings({ provider: 'simulated' });
       const history = [{ role: 'user', content: 'I want to end my life, the exam stress is too much' }];
       const response = await ai.generateChatResponse(history);
       
@@ -105,12 +107,20 @@ export const tests = {
     });
 
     await runTest('AI Engine: Safety triggers redirection in journal', async () => {
+      db.saveSettings({ provider: 'simulated' });
       const text = 'I want to die because of this backlog stress';
       const analysis = await ai.analyzeJournal(text, 1);
       
       assert(analysis.isSafetyAlert === true, 'Safety warning flag not raised in journal');
       assert(analysis.sentiment.includes('CRITICAL'), 'Sentiment does not contain critical alarm label');
       assert(analysis.coping.some(c => c.includes('AASRA') || c.includes('Vandrevala')), 'Coping plan missing helplines');
+    });
+
+    await runTest('AI Engine: Live OpenRouter connection validation', async () => {
+      db.saveSettings({ provider: 'openrouter' });
+      const history = [{ role: 'user', content: 'Respond with exactly the word OK' }];
+      const response = await ai.generateChatResponse(history);
+      assert(response.content && response.content.trim().length > 0, 'OpenRouter did not return text content');
     });
 
     // 4. Mindfulness POMODORO State Machine

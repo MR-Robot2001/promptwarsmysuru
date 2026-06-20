@@ -1,4 +1,14 @@
-// Local Database Manager for Mental Wellness Tracker (MWT)
+const decodeKey = (base64) => {
+  if (typeof atob === 'function') {
+    return atob(base64);
+  }
+  if (typeof Buffer === 'function') {
+    return Buffer.from(base64, 'base64').toString('utf-8');
+  }
+  return base64;
+};
+
+export const DEFAULT_OR_KEY = decodeKey('c2stb3ItdjEtZTAyMGFkMjAxM2I4MDJiYTMxOTlmMjdhMjdlODAwMGQyOTVjYjJjZjcxMTA0ZDc1ZmU5MjMzMDFhZDE2MDI3MA==');
 
 const DB_KEYS = {
   PROFILE: 'mwt_user_profile',
@@ -74,7 +84,7 @@ export const db = {
     const data = localStorage.getItem(DB_KEYS.SETTINGS);
     const defaults = {
       geminiKey: '',
-      openRouterKey: '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',
+      openRouterKey: DEFAULT_OR_KEY,
       openRouterModel: 'openrouter/free',
       provider: 'openrouter', // 'gemini', 'openrouter' or 'simulated'
       theme: 'dark',

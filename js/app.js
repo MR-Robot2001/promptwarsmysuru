@@ -1,9 +1,20 @@
 // Main Application Controller for Mental Wellness Tracker (MWT)
-import { db } from './db.js';
-import { ai } from './ai.js';
+import { db, DEFAULT_OR_KEY } from './db.js';
+import { ai, SAFETY_KEYWORDS } from './ai.js';
 import { mindfulness } from './mindfulness.js';
 import { dashboard } from './dashboard.js';
 import { tests } from './tests.js';
+
+// Safe XSS Prevention Escape Utility
+function escapeHTML(str) {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
 // Global variables for active timers
 let activeBoxBreathing = null;
@@ -37,11 +48,15 @@ function initApp() {
   // 2. Load Settings & Theme
   let settings = db.getSettings();
   
-  // Force active local sessions to transition from simulated mode and rate-limited configurations to Free Router
-  if (settings.provider === 'simulated' || settings.openRouterModel === 'meta-llama/llama-3.3-70b-instruct:free') {
+  // Force active local sessions to transition from simulated mode, rate-limited configurations, or old API keys to the active key
+  if (settings.provider === 'simulated' || 
+      settings.openRouterModel === 'meta-llama/llama-3.3-70b-instruct:free' ||
+      settings.openRouterKey === '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' ||
+      !settings.openRouterKey) {
     db.saveSettings({ 
       provider: 'openrouter', 
-      openRouterModel: 'openrouter/free'
+      openRouterModel: 'openrouter/free',
+      openRouterKey: DEFAULT_OR_KEY
     });
     settings = db.getSettings();
   }
@@ -49,7 +64,7 @@ function initApp() {
   applyTheme(settings.theme);
   document.getElementById('select-settings-provider').value = settings.provider;
   document.getElementById('input-gemini-key').value = settings.geminiKey || '';
-  document.getElementById('input-openrouter-key').value = settings.openRouterKey || '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';
+  document.getElementById('input-openrouter-key').value = settings.openRouterKey || DEFAULT_OR_KEY;
   document.getElementById('select-openrouter-model').value = settings.openRouterModel || 'openrouter/free';
   
   if (settings.provider === 'gemini') {
@@ -282,11 +297,19 @@ function initJournal() {
   const textarea = document.getElementById('txt-journal-body');
   const analyzeBtn = document.getElementById('btn-analyze-journal');
 
-  // Word count dynamic updates
+  // Word count & safety live scanner updates
   textarea.addEventListener('input', () => {
     const text = textarea.value.trim();
     const count = text ? text.split(/\s+/).length : 0;
     document.getElementById('lbl-word-count').textContent = `${count} word${count === 1 ? '' : 's'}`;
+
+    // Highlight input frame in red if critical self-harm/crisis keywords are found
+    const isDistress = SAFETY_KEYWORDS.some(k => text.toLowerCase().includes(k));
+    if (isDistress) {
+      textarea.classList.add('input-safety-alert');
+    } else {
+      textarea.classList.remove('input-safety-alert');
+    }
   });
 
   // AI analysis click handler
@@ -315,6 +338,7 @@ function initJournal() {
 
       // Refresh form & histories
       textarea.value = '';
+      textarea.classList.remove('input-safety-alert');
       document.getElementById('lbl-word-count').textContent = '0 words';
       renderJournalHistory();
       updateDashboard();
@@ -362,7 +386,7 @@ function renderJournalAnalysisResults(result) {
   result.triggers.forEach(trigger => {
     const chip = document.createElement('span');
     chip.className = 'trigger-chip';
-    chip.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${trigger}`;
+    chip.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${escapeHTML(trigger)}`;
     chipsContainer.appendChild(chip);
   });
 
@@ -396,7 +420,7 @@ function renderJournalHistory() {
     });
 
     const triggersChips = entry.analysis?.triggers 
-      ? entry.analysis.triggers.map(t => `<span class="trigger-chip" style="padding: 0.15rem 0.5rem; font-size: 0.7rem; border-color: rgba(20,184,166,0.3);"><i class="fa-solid fa-hashtag"></i> ${t}</span>`).join(' ')
+      ? entry.analysis.triggers.map(t => `<span class="trigger-chip" style="padding: 0.15rem 0.5rem; font-size: 0.7rem; border-color: rgba(20,184,166,0.3);"><i class="fa-solid fa-hashtag"></i> ${escapeHTML(t)}</span>`).join(' ')
       : '';
 
     div.innerHTML = `
@@ -404,13 +428,13 @@ function renderJournalHistory() {
         <div class="entry-meta">
           <span><i class="fa-regular fa-calendar-days"></i> ${dateFormatted}</span>
           <span>Mood: ${entry.moodScore}/5</span>
-          ${entry.analysis?.sentiment ? `<span style="color: var(--color-primary); font-weight: 600;">• ${entry.analysis.sentiment}</span>` : ''}
+          ${entry.analysis?.sentiment ? `<span style="color: var(--color-primary); font-weight: 600;">• ${escapeHTML(entry.analysis.sentiment)}</span>` : ''}
         </div>
-        <p class="entry-text">${entry.text}</p>
+        <p class="entry-text">${escapeHTML(entry.text)}</p>
         ${triggersChips ? `<div class="trigger-chips-flex" style="margin-top: 0.5rem;">${triggersChips}</div>` : ''}
         ${entry.analysis?.summary ? `
           <div style="margin-top: 0.75rem; border-left: 2px solid var(--color-secondary); padding-left: 0.75rem; font-size: 0.85rem; font-style: italic; color: var(--text-secondary);">
-            <strong>Companion Summary:</strong> ${entry.analysis.summary}
+            <strong>Companion Summary:</strong> ${escapeHTML(entry.analysis.summary)}
           </div>
         ` : ''}
       </div>
@@ -631,6 +655,17 @@ function initChat() {
     { role: 'model', content: "Hi, I am CalmCompanion. Exam preparation (whether JEE, NEET, UPSC, or Boards) can be highly demanding and stressful. I am here to listen without judgment. How are you coping today?" }
   ];
 
+  // Live safety input frame scanner for chat
+  chatInput.addEventListener('input', () => {
+    const text = chatInput.value.toLowerCase();
+    const isDistress = SAFETY_KEYWORDS.some(k => text.includes(k));
+    if (isDistress) {
+      chatInput.classList.add('input-safety-alert');
+    } else {
+      chatInput.classList.remove('input-safety-alert');
+    }
+  });
+
   const appendBubble = (role, text, isSafety = false) => {
     const bubble = document.createElement('div');
     bubble.className = `chat-bubble ${role === 'user' ? 'user' : 'assistant'}`;
@@ -638,8 +673,8 @@ function initChat() {
       bubble.classList.add('chat-bubble-alert');
     }
     
-    // Simple line break support
-    bubble.innerHTML = text.replace(/\n/g, '<br>');
+    // Safe line break support with XSS prevention
+    bubble.innerHTML = escapeHTML(text).replace(/\n/g, '<br>');
     messagesContainer.appendChild(bubble);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   };
@@ -673,6 +708,7 @@ function initChat() {
     appendBubble('user', userText);
     history.push({ role: 'user', content: userText });
     chatInput.value = '';
+    chatInput.classList.remove('input-safety-alert');
 
     // Show AI processing bubbles
     appendTypingIndicator();
