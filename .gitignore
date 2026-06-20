@@ -1,0 +1,6 @@
+# Git Ignore patterns for Aura Wellness Tracker
+node_modules/
+.system_generated/
+*.log
+.DS_Store
+Thumbs.db

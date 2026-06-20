@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aura - Automated Test Suites Runner</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      border-bottom: 1px solid #334155;
+      padding-bottom: 0.5rem;
+    }
+    .test-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+      border-bottom: 1px solid #1e293b;
+    }
+    .passed {
+      color: #10b981;
+      font-weight: bold;
+    }
+    .failed {
+      color: #ef4444;
+      font-weight: bold;
+    }
+    .btn-run {
+      background-color: #6366f1;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .btn-run:hover {
+      background-color: #4f46e5;
+    }
+  </style>
+</head>
+<body>
+  <h1>Aura Automated Test Runner</h1>
+  <p>Executes sandbox unit tests directly within your browser context.</p>
+  <button class="btn-run" id="btn-run">Run Test Suites</button>
+  <div id="results">
+    <p style="color: #64748b;">Click the button to begin executing unit tests...</p>
+  </div>
+
+  <script type="module">
+    import { tests } from '../js/tests.js';
+
+    document.getElementById('btn-run').addEventListener('click', async () => {
+      const container = document.getElementById('results');
+      container.innerHTML = '<p>Executing tests...</p>';
+      
+      try {
+        const results = await tests.runAll();
+        container.innerHTML = '';
+        results.forEach(res => {
+          const div = document.createElement('div');
+          div.className = 'test-row';
+          div.innerHTML = `
+            <span><strong>${res.name}</strong> (${res.duration})</span>
+            <span class="${res.status.toLowerCase()}">${res.status}</span>
+          `;
+          if (res.error) {
+            div.innerHTML += `<div style="color: #f87171; width: 100%; margin-top: 0.5rem; font-size: 0.85rem;">Error: ${res.error}</div>`;
+          }
+          container.appendChild(div);
+        });
+      } catch (err) {
+        container.innerHTML = `<p class="failed">Test Runner Crash: ${err.message}</p>`;
+      }
+    });
+  </script>
+</body>
+</html>

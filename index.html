@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aura - Competitive Exam Mental Wellness Companion</title>
+  <meta name="description" content="An empathetic Generative AI-powered mental wellness companion and dashboard designed specifically for students preparing for high-stakes board exams and competitive entrance tests like JEE, NEET, and UPSC.">
+  
+  <!-- FontAwesome Icons & CSS styles -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Chart.js CDN for Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dark-theme">
+
+  <!-- APP ROOT CONTAINER -->
+  <div id="app-container">
+    
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar" aria-label="Main Navigation">
+      <div class="logo-section">
+        <div class="logo-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+        <span class="logo-text">Aura</span>
+      </div>
+      
+      <nav aria-label="App Navigation">
+        <ul class="nav-links">
+          <li class="nav-item active" id="nav-dashboard-li">
+            <button id="btn-nav-dashboard" aria-label="Go to Dashboard"><i class="fa-solid fa-chart-simple"></i> Dashboard</button>
+          </li>
+          <li class="nav-item" id="nav-journal-li">
+            <button id="btn-nav-journal" aria-label="Go to Journal and AI Coach"><i class="fa-solid fa-pen-nib"></i> Journal & AI</button>
+          </li>
+          <li class="nav-item" id="nav-mindfulness-li">
+            <button id="btn-nav-mindfulness" aria-label="Go to Mindfulness Center"><i class="fa-solid fa-spa"></i> Mindfulness</button>
+          </li>
+          <li class="nav-item" id="nav-chat-li">
+            <button id="btn-nav-chat" aria-label="Go to Calm Companion Chat"><i class="fa-solid fa-comments"></i> CalmCompanion</button>
+          </li>
+          <li class="nav-item" id="nav-diagnostics-li">
+            <button id="btn-nav-diagnostics" aria-label="Go to Developer Diagnostics"><i class="fa-solid fa-vial"></i> Diagnostics</button>
+          </li>
+          <li class="nav-item" id="nav-settings-li">
+            <button id="btn-nav-settings" aria-label="Go to App Settings"><i class="fa-solid fa-sliders"></i> Settings</button>
+          </li>
+        </ul>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="user-mini-profile" id="user-profile-widget">
+          <div class="user-avatar" id="lbl-avatar">U</div>
+          <div class="user-info">
+            <span class="user-name" id="lbl-username">Aspirant</span>
+            <span class="user-target" id="lbl-exam">Competitive Prep</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN DISPLAY SPACE -->
+    <main class="main-content" aria-label="App Content Panel">
+      
+      <!-- Top Action Bar -->
+      <header class="top-bar">
+        <div class="page-title">
+          <h1 id="main-header-title">Wellness Dashboard</h1>
+          <p id="main-header-subtitle">Your study-wellness balance statistics</p>
+        </div>
+        <div class="top-actions">
+          <button class="theme-toggle" id="btn-theme-toggle" title="Toggle Dark/Light Mode" aria-label="Toggle Dark or Light Mode">
+            <i class="fa-solid fa-sun" id="icon-theme"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- PANES WORKSPACE -->
+      
+      <!-- 1. DASHBOARD PANE -->
+      <section class="view-pane active" id="pane-dashboard" aria-label="Dashboard Overview">
+        <div class="dashboard-grid">
+          
+          <!-- Welcome Banner -->
+          <div class="glass-card col-12 welcome-banner">
+            <h2 id="lbl-greeting">Hello, Aspirant</h2>
+            <p style="margin-top: 0.5rem; color: var(--text-secondary);" id="lbl-countdown">Keep breathing and revising. Today is a fresh opportunity to learn.</p>
+          </div>
+
+          <!-- Study-Wellness Index Ring -->
+          <div class="glass-card col-4">
+            <h3 class="dashboard-card-title"><i class="fa-solid fa-scale-balanced text-secondary"></i> Study-Wellness Balance</h3>
+            <div class="balance-widget-flex">
+              <div class="balance-score-ring">
+                <div class="balance-score-circle" id="balance-conic">
+                  <div class="balance-score-inner">
+                    <span class="balance-num" id="lbl-balance-score">80</span>
+                    <span class="balance-lbl">Balance Index</span>
+                  </div>
+                </div>
+              </div>
+              <div class="balance-inputs">
+                <div class="balance-input-row">
+                  <label for="input-study-hours">Study Hours:</label>
+                  <input type="number" id="input-study-hours" min="0" max="24" step="0.5" value="8">
+                </div>
+                <div class="balance-input-row">
+                  <label for="input-sleep-hours">Sleep Hours:</label>
+                  <input type="number" id="input-sleep-hours" min="0" max="24" step="0.5" value="7">
+                </div>
+                <div class="balance-input-row">
+                  <label for="input-relax-mins">Relax Mins:</label>
+                  <input type="number" id="input-relax-mins" min="0" max="1440" step="5" value="30">
+                </div>
+              </div>
+            </div>
+            <p id="lbl-balance-verdict" style="font-size: 0.8rem; margin-top: 1rem; text-align: center;" class="text-info">Good Balance</p>
+          </div>
+
+          <!-- Quick Mood Logger -->
+          <div class="glass-card col-4">
+            <h3 class="dashboard-card-title"><i class="fa-solid fa-face-smile text-secondary"></i> Daily Mood Log</h3>
+            <div class="mood-picker-flex" role="group" aria-label="Mood Logger Selector">
+              <button class="mood-btn" data-mood="1" aria-label="Feeling 😫 Highly Stressed"><span class="mood-emoji">😫</span><span class="mood-label">Stressed</span></button>
+              <button class="mood-btn" data-mood="2" aria-label="Feeling 😕 Anxious"><span class="mood-emoji">😕</span><span class="mood-label">Anxious</span></button>
+              <button class="mood-btn" data-mood="3" aria-label="Feeling 😐 Neutral"><span class="mood-emoji">😐</span><span class="mood-label">Neutral</span></button>
+              <button class="mood-btn" data-mood="4" aria-label="Feeling 😊 Calm/Productive"><span class="mood-emoji">😊</span><span class="mood-label">Calm</span></button>
+              <button class="mood-btn" data-mood="5" aria-label="Feeling 🧘 Fully Peaceful"><span class="mood-emoji">🧘</span><span class="mood-label">Peaceful</span></button>
+            </div>
+            <p id="lbl-mood-logged-status" style="font-size: 0.8rem; margin-top: 1.1rem; text-align: center; color: var(--text-muted);">Quick-log your state any time</p>
+          </div>
+
+          <!-- Quick Breathing Guide Shortcut -->
+          <div class="glass-card col-4 quote-card">
+            <h3 class="dashboard-card-title"><i class="fa-solid fa-quote-left text-secondary"></i> Aspirant Affirmation</h3>
+            <p class="quote-text" id="lbl-dashboard-quote">"Your potential is not limited by a single mock test score. Keep pushing forward."</p>
+            <p class="quote-author">— Daily Focus Guide</p>
+          </div>
+
+          <!-- Weekly Mood Chart -->
+          <div class="glass-card col-8">
+            <h3 class="dashboard-card-title"><i class="fa-solid fa-chart-line text-secondary"></i> Emotional Well-being Timeline</h3>
+            <div class="chart-container">
+              <canvas id="chart-mood"></canvas>
+            </div>
+          </div>
+
+          <!-- Stress Triggers Chart -->
+          <div class="glass-card col-4">
+            <h3 class="dashboard-card-title"><i class="fa-solid fa-triangle-exclamation text-secondary"></i> Stress Triggers (AI Identified)</h3>
+            <div class="chart-container">
+              <canvas id="chart-triggers"></canvas>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 2. JOURNAL PANE -->
+      <section class="view-pane" id="pane-journal" aria-label="Daily Journaling and AI Coaching">
+        <div class="journal-workspace">
+          
+          <!-- Journal Editor Area -->
+          <div class="glass-card" style="display: flex; flex-direction: column; gap: 1rem;">
+            <h2>Daily Journal Log</h2>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">Unload your thoughts, prep anxieties, or mock test results here. AI will analyze patterns to identify triggers.</p>
+            
+            <textarea class="journal-textarea" id="txt-journal-body" placeholder="Start typing your thoughts, expectations, and mock test concerns..."></textarea>
+            
+            <div class="editor-footer">
+              <span class="word-count" id="lbl-word-count">0 words</span>
+              <div class="journal-mood-select">
+                <label for="select-journal-mood">Today's Mood:</label>
+                <select id="select-journal-mood">
+                  <option value="5">🧘 5 - Peaceful / Focused</option>
+                  <option value="4">😊 4 - Confident / Energetic</option>
+                  <option value="3" selected>😐 3 - Neutral / Doing Okay</option>
+                  <option value="2">😕 2 - Stressed / Backlogged</option>
+                  <option value="1">😫 1 - Burnt Out / Anxious</option>
+                </select>
+              </div>
+              <button class="btn-primary" id="btn-analyze-journal"><i class="fa-solid fa-wand-magic-sparkles"></i> Analyze Log</button>
+            </div>
+          </div>
+
+          <!-- Sidebar AI Coach Analysis Report -->
+          <div class="glass-card" style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <div class="analysis-header">
+              <h3>AI Coach Insight</h3>
+              <span class="sentiment-badge" id="lbl-sentiment-badge">Awaiting Log</span>
+            </div>
+            
+            <div class="analysis-section">
+              <span class="analysis-section-title">Empathy Summary</span>
+              <p id="lbl-analysis-summary" style="font-size: 0.9rem; line-height: 1.5; color: var(--text-secondary);">Write in your journal and click Analyze to receive personalized wellness guidance from your companion.</p>
+            </div>
+
+            <div class="analysis-section">
+              <span class="analysis-section-title">Detected Triggers</span>
+              <div class="trigger-chips-flex" id="container-triggers-chips">
+                <span class="trigger-chip" style="color: var(--text-muted);"><i class="fa-solid fa-clock"></i> Awaiting insights</span>
+              </div>
+            </div>
+
+            <div class="analysis-section">
+              <span class="analysis-section-title">Tailored Coping Plan</span>
+              <ul class="coping-list" id="container-coping-list">
+                <li style="color: var(--text-muted); list-style: none; margin-left: -1rem;">Coping strategies will be listed here based on triggers.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Past Journal Timeline -->
+        <div class="history-section">
+          <h2>Journal History & Logs</h2>
+          <div class="entry-list" id="container-journals-history">
+            <!-- Dynamic items go here -->
+            <p style="color: var(--text-muted); font-size: 0.95rem; text-align: center; padding: 2rem;">No journal entries logged yet. Create your first one above!</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. MINDFULNESS PANE -->
+      <section class="view-pane" id="pane-mindfulness" aria-label="Mindfulness and Focus Center">
+        <div class="mindfulness-tabs-grid">
+          
+          <!-- Box Breathing Bubble Component -->
+          <div class="glass-card breathing-card" id="card-breathing-workspace">
+            <h2 style="position: absolute; top: 1.5rem; left: 1.5rem;"><i class="fa-solid fa-circle-notch"></i> Box Breathing Cycle</h2>
+            
+            <div class="breathing-ring-outer">
+              <div class="breathing-circle-glow" id="breath-glow"></div>
+              <div class="breathing-bubble" id="breath-bubble">
+                <span class="breathing-bubble-text" id="lbl-breath-counter">4</span>
+              </div>
+            </div>
+
+            <div class="breathing-instructions" id="lbl-breath-instruction">Start Box Breathing</div>
+            <div class="breathing-subtext" id="lbl-breath-subtext">Balances nervous system & clears pre-exam jitters</div>
+
+            <div class="breathing-controls">
+              <button class="btn-primary" id="btn-breathing-start"><i class="fa-solid fa-play"></i> Start</button>
+              <button class="btn-secondary" id="btn-breathing-pause" style="display:none;"><i class="fa-solid fa-pause"></i> Pause</button>
+              <button class="btn-secondary" id="btn-breathing-reset"><i class="fa-solid fa-arrow-rotate-left"></i> Reset</button>
+            </div>
+          </div>
+
+          <!-- Pomodoro Study Focus Timer Component -->
+          <div class="glass-card timer-container">
+            <h2>Aspirant Focus Timer</h2>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Align study sprints with deliberate recovery breaks</p>
+            
+            <div class="timer-modes" role="group" aria-label="Timer Durations Selection">
+              <button class="timer-mode-btn active" id="btn-timer-study" data-mode="STUDY">Study Session (25m)</button>
+              <button class="timer-mode-btn" id="btn-timer-short" data-mode="SHORT_BREAK">Wellness Break (5m)</button>
+              <button class="timer-mode-btn" id="btn-timer-long" data-mode="LONG_BREAK">Recharge Break (15m)</button>
+            </div>
+
+            <div class="timer-countdown" id="lbl-timer-clock">25:00</div>
+            <div class="timer-label" id="lbl-timer-mode-text">Study Focus</div>
+
+            <div class="timer-controls">
+              <button class="btn-primary" id="btn-timer-start"><i class="fa-solid fa-play"></i> Start</button>
+              <button class="btn-secondary" id="btn-timer-pause" style="display:none;"><i class="fa-solid fa-pause"></i> Pause</button>
+              <button class="btn-secondary" id="btn-timer-reset"><i class="fa-solid fa-arrow-rotate-left"></i> Reset</button>
+            </div>
+            
+            <p style="font-size: 0.8rem; margin-top: 1.5rem; color: var(--text-muted);" id="lbl-completed-sessions">Completed Focus Sessions: 0</p>
+          </div>
+
+        </div>
+
+        <!-- Guided Wellness Exercises Catalog -->
+        <div class="history-section">
+          <h2>Guided Mental Exercises</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Simple mental resets designed for quick deployment during study blocks.</p>
+          <div class="mindfulness-tabs-grid" id="container-guided-exercises">
+            <!-- Will be dynamically filled from code -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. CHAT COMPANION PANE -->
+      <section class="view-pane" id="pane-chat" aria-label="Calm Companion Empathetic Chat">
+        <div class="glass-card chat-pane">
+          
+          <div class="chat-header-info">
+            <div class="chat-status-dot"></div>
+            <div>
+              <h3 style="font-size: 1.05rem;">CalmCompanion Coach</h3>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">Empathetic assistant • Available 24/7</p>
+            </div>
+          </div>
+
+          <!-- Chat messages area -->
+          <div class="chat-messages" id="container-chat-messages">
+            <div class="chat-bubble assistant">
+              <p>Hi, I am <strong>CalmCompanion</strong>. Exam preparation (whether JEE, NEET, UPSC, or Boards) can be highly demanding and stressful. I am here to listen without judgment. How are you coping today?</p>
+            </div>
+          </div>
+
+          <!-- Chat controls & inputs -->
+          <div>
+            <div class="quick-prompts-flex" id="container-quick-chips">
+              <button class="quick-prompt-btn" data-text="I'm feeling burnt out and tired today.">Feeling Burnt Out 😫</button>
+              <button class="quick-prompt-btn" data-text="I got a bad score on my mock test.">Mock Test Stress 😕</button>
+              <button class="quick-prompt-btn" data-text="I can't seem to focus on my physics revision.">Distracted 🙄</button>
+              <button class="quick-prompt-btn" data-text="Show me a quick 2-minute relaxation exercise.">Quick Reset 🧘</button>
+            </div>
+            
+            <form class="chat-input-row" id="form-chat" onsubmit="return false;">
+              <input type="text" class="chat-input" id="input-chat-message" placeholder="Talk to CalmCompanion..." autocomplete="off">
+              <button type="submit" class="chat-send-btn" id="btn-chat-send" aria-label="Send message"><i class="fa-solid fa-paper-plane"></i></button>
+            </form>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 5. SYSTEM DIAGNOSTICS PANE (TESTING) -->
+      <section class="view-pane" id="pane-diagnostics" aria-label="System Diagnostics and Tests">
+        <div class="glass-card">
+          <h2>Developer Diagnostics & Unit Tests</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Verify system stability, database transactions, simulated GenAI parsing, and timers directly inside the browser environment.</p>
+          
+          <button class="btn-primary" id="btn-run-diagnostics"><i class="fa-solid fa-circle-play"></i> Execute Automated Tests</button>
+          
+          <table class="diagnostics-table">
+            <thead>
+              <tr>
+                <th scope="col">Test Case Name</th>
+                <th scope="col">Execution Duration</th>
+                <th scope="col">Test Status</th>
+              </tr>
+            </thead>
+            <tbody id="container-diagnostics-results">
+              <tr>
+                <td colspan="3" style="text-align: center; color: var(--text-muted); padding: 2rem;">No test runs executed. Click above to trigger system checks.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 6. SETTINGS PANE -->
+      <section class="view-pane" id="pane-settings" aria-label="Application Settings">
+        <div class="glass-card" style="max-width: 600px; display: flex; flex-direction: column; gap: 1.5rem;">
+          <h2>Application Settings</h2>
+          
+          <!-- API Keys management -->
+          <div class="form-group">
+            <label for="select-settings-provider">AI Model Engine Provider:</label>
+            <select id="select-settings-provider">
+              <option value="simulated">Empathetic Simulated Coach (Local Offline, No Key Needed)</option>
+              <option value="gemini">Google Gemini AI Engine (Real-Time GenAI, Requires API Key)</option>
+              <option value="openrouter">OpenRouter Engine (Open Source Free Models, Key Included)</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="group-gemini-key" style="display: none;">
+            <label for="input-gemini-key">Gemini API Key:</label>
+            <input type="password" id="input-gemini-key" placeholder="AIzaSy...">
+            <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Your API key is stored locally in your browser's localStorage and is only dispatched directly to the Google APIs endpoint.</span>
+          </div>
+
+          <div class="form-group" id="group-openrouter-config" style="display: none; flex-direction: column; gap: 1.25rem;">
+            <div class="form-group">
+              <label for="input-openrouter-key">OpenRouter API Key:</label>
+              <input type="password" id="input-openrouter-key" placeholder="sk-or-v1-...">
+              <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Pre-filled with a working key. Modify only if you have your own OpenRouter key.</span>
+            </div>
+            
+            <div class="form-group">
+              <label for="select-openrouter-model">Choose Model:</label>
+              <select id="select-openrouter-model">
+                <option value="openrouter/free">OpenRouter: Free Models Router (auto load-balance)</option>
+                <option value="meta-llama/llama-3.3-70b-instruct:free">Meta: Llama 3.3 70B Instruct (free)</option>
+                <option value="liquid/lfm2.5-1.2b-thinking:free">LiquidAI: LFM2.5-1.2B-Thinking (free)</option>
+                <option value="liquid/lfm2.5-1.2b-instruct:free">LiquidAI: LFM2.5-1.2B-Instruct (free)</option>
+                <option value="nousresearch/hermes-3-llama-3.1-405b:free">Nous: Hermes 3 405B Instruct (free)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Edit Profile -->
+          <div class="form-group">
+            <h3>Profile Settings</h3>
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 0.5rem;">
+              <div class="form-group">
+                <label for="input-settings-name">Your Name:</label>
+                <input type="text" id="input-settings-name" value="Aspirant">
+              </div>
+              <div class="form-group">
+                <label for="select-settings-exam">Target Exam:</label>
+                <select id="select-settings-exam">
+                  <option value="JEE (Mains/Advanced)">JEE (Mains/Advanced)</option>
+                  <option value="NEET">NEET</option>
+                  <option value="UPSC Civil Services">UPSC Civil Services</option>
+                  <option value="GATE">GATE</option>
+                  <option value="CAT">CAT</option>
+                  <option value="CUET">CUET</option>
+                  <option value="Board Exams (CBSE/ICSE)">Board Exams (CBSE/ICSE)</option>
+                  <option value="Other Entrance Exams">Other Entrance Exams</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="input-settings-date">Target Exam Date:</label>
+                <input type="date" id="input-settings-date" value="2026-06-30">
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+            <button class="btn-primary" id="btn-save-settings"><i class="fa-solid fa-floppy-disk"></i> Save Settings</button>
+            <button class="btn-secondary" id="btn-reset-data" style="color: var(--color-danger); border-color: rgba(239, 68, 68, 0.3);"><i class="fa-solid fa-trash-can"></i> Delete All Data</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- SETUP OVERLAY (MODAL FOR NEW USERS) -->
+  <div class="setup-overlay" id="overlay-setup" style="display: none;">
+    <section class="setup-card" aria-label="Create Your Profile">
+      <div class="setup-header">
+        <div class="logo-icon" style="margin: 0 auto 1rem; width: 50px; height: 50px; font-size: 1.5rem;"><i class="fa-solid fa-heart-pulse"></i></div>
+        <h2>Welcome to Aura</h2>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">A Generative AI-powered mental wellness companion tailored for exam aspirants</p>
+      </div>
+      <form class="setup-form" id="form-setup" onsubmit="return false;">
+        <div class="form-group">
+          <label for="input-setup-name">What should we call you?</label>
+          <input type="text" id="input-setup-name" required placeholder="Enter your name...">
+        </div>
+        <div class="form-group">
+          <label for="select-setup-exam">What competitive test are you preparing for?</label>
+          <select id="select-setup-exam">
+            <option value="JEE (Mains/Advanced)">JEE (Mains/Advanced)</option>
+            <option value="NEET">NEET</option>
+            <option value="UPSC Civil Services">UPSC Civil Services</option>
+            <option value="GATE">GATE</option>
+            <option value="CAT">CAT</option>
+            <option value="CUET">CUET</option>
+            <option value="Board Exams (CBSE/ICSE)">Board Exams (CBSE/ICSE)</option>
+            <option value="Other Entrance Exams">Other Entrance/Board Exams</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="input-setup-date">Target Exam Date (Approximate):</label>
+          <input type="date" id="input-setup-date" required>
+        </div>
+        <button type="submit" class="btn-primary" id="btn-setup-submit" style="margin-top: 1rem;">Begin Wellness Tracking</button>
+      </form>
+    </section>
+  </div>
+
+  <!-- GUIDED WALKTHROUGH OVERLAY -->
+  <div class="guided-overlay" id="overlay-guided" style="display: none;">
+    <section class="guided-card" aria-label="Guided Relaxation Exercise">
+      <h2 id="lbl-guided-title" style="color: var(--color-secondary);"><i class="fa-solid fa-spa"></i> Pre-Exam Calm Down</h2>
+      <div class="guided-step-text" id="lbl-guided-text">Sit comfortably and scan your shoulders. Feel them loosen.</div>
+      
+      <div class="guided-progress-bar">
+        <div class="guided-progress-fill" id="fill-guided-progress"></div>
+      </div>
+      
+      <button class="btn-secondary" id="btn-guided-skip"><i class="fa-solid fa-xmark"></i> Close Exercise</button>
+    </section>
+  </div>
+
+  <!-- Main JavaScript App Controller -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

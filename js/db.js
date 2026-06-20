@@ -1,0 +1,98 @@
+// Local Database Manager for Mental Wellness Tracker (MWT)
+
+const DB_KEYS = {
+  PROFILE: 'mwt_user_profile',
+  MOOD_LOGS: 'mwt_mood_logs',
+  JOURNALS: 'mwt_journals',
+  SETTINGS: 'mwt_settings'
+};
+
+export const db = {
+  // --- Profile Management ---
+  getProfile() {
+    const data = localStorage.getItem(DB_KEYS.PROFILE);
+    return data ? JSON.parse(data) : null;
+  },
+
+  saveProfile(profile) {
+    localStorage.setItem(DB_KEYS.PROFILE, JSON.stringify(profile));
+    // Trigger profile change event
+    window.dispatchEvent(new CustomEvent('mwt-profile-updated', { detail: profile }));
+  },
+
+  // --- Mood Logs ---
+  getMoodLogs() {
+    const data = localStorage.getItem(DB_KEYS.MOOD_LOGS);
+    return data ? JSON.parse(data) : [];
+  },
+
+  saveMoodLog(moodScore, moodName, note = '') {
+    const logs = this.getMoodLogs();
+    const newLog = {
+      id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 9),
+      timestamp: new Date().toISOString(),
+      score: moodScore, // 1 (Very Stressed) to 5 (Very Calm/Happy)
+      mood: moodName,
+      note: note
+    };
+    logs.push(newLog);
+    localStorage.setItem(DB_KEYS.MOOD_LOGS, JSON.stringify(logs));
+    window.dispatchEvent(new CustomEvent('mwt-mood-updated', { detail: logs }));
+    return newLog;
+  },
+
+  // --- Journal Entries & Analysis ---
+  getJournals() {
+    const data = localStorage.getItem(DB_KEYS.JOURNALS);
+    return data ? JSON.parse(data) : [];
+  },
+
+  saveJournalEntry(text, moodScore, analysis = null) {
+    const journals = this.getJournals();
+    const entry = {
+      id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 9),
+      timestamp: new Date().toISOString(),
+      text,
+      moodScore,
+      analysis // contains: { sentiment, triggers, coping, summary }
+    };
+    journals.push(entry);
+    localStorage.setItem(DB_KEYS.JOURNALS, JSON.stringify(journals));
+    window.dispatchEvent(new CustomEvent('mwt-journals-updated', { detail: journals }));
+    return entry;
+  },
+
+  deleteJournalEntry(id) {
+    const journals = this.getJournals();
+    const updated = journals.filter(j => j.id !== id);
+    localStorage.setItem(DB_KEYS.JOURNALS, JSON.stringify(updated));
+    window.dispatchEvent(new CustomEvent('mwt-journals-updated', { detail: updated }));
+  },
+
+  // --- API & General Settings ---
+  getSettings() {
+    const data = localStorage.getItem(DB_KEYS.SETTINGS);
+    const defaults = {
+      geminiKey: '',
+      openRouterKey: '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',
+      openRouterModel: 'openrouter/free',
+      provider: 'openrouter', // 'gemini', 'openrouter' or 'simulated'
+      theme: 'dark',
+      notificationsEnabled: false
+    };
+    return data ? { ...defaults, ...JSON.parse(data) } : defaults;
+  },
+
+  saveSettings(settings) {
+    const current = this.getSettings();
+    const updated = { ...current, ...settings };
+    localStorage.setItem(DB_KEYS.SETTINGS, JSON.stringify(updated));
+    window.dispatchEvent(new CustomEvent('mwt-settings-updated', { detail: updated }));
+  },
+
+  // --- Reset All Data ---
+  clearAllData() {
+    Object.values(DB_KEYS).forEach(key => localStorage.removeItem(key));
+    window.dispatchEvent(new CustomEvent('mwt-data-reset'));
+  }
+};
