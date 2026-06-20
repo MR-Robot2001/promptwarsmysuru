@@ -141,7 +141,7 @@
           <div class="glass-card col-8">
             <h3 class="dashboard-card-title"><i class="fa-solid fa-chart-line text-secondary" aria-hidden="true"></i> Emotional Well-being Timeline</h3>
             <div class="chart-container">
-              <canvas id="chart-mood"></canvas>
+              <canvas id="chart-mood" role="img" aria-label="Line chart displaying weekly student emotional well-being timeline logs"></canvas>
             </div>
           </div>
 
@@ -149,7 +149,7 @@
           <div class="glass-card col-4">
             <h3 class="dashboard-card-title"><i class="fa-solid fa-triangle-exclamation text-secondary" aria-hidden="true"></i> Stress Triggers (AI Identified)</h3>
             <div class="chart-container">
-              <canvas id="chart-triggers"></canvas>
+              <canvas id="chart-triggers" role="img" aria-label="Doughnut chart displaying distribution of AI-identified academic and physical stress triggers"></canvas>
             </div>
           </div>
 
@@ -360,14 +360,14 @@
 
           <div class="form-group" id="group-gemini-key" style="display: none;">
             <label for="input-gemini-key">Gemini API Key:</label>
-            <input type="password" id="input-gemini-key" placeholder="AIzaSy...">
+            <input type="password" id="input-gemini-key" placeholder="AIzaSy..." autocomplete="off">
             <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Your API key is stored locally in your browser's localStorage and is only dispatched directly to the Google APIs endpoint.</span>
           </div>
 
           <div class="form-group" id="group-openrouter-config" style="display: none; flex-direction: column; gap: 1.25rem;">
             <div class="form-group">
               <label for="input-openrouter-key">OpenRouter API Key:</label>
-              <input type="password" id="input-openrouter-key" placeholder="sk-or-v1-...">
+              <input type="password" id="input-openrouter-key" placeholder="sk-or-v1-..." autocomplete="off">
               <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Pre-filled with a working key. Modify only if you have your own OpenRouter key.</span>
             </div>
             

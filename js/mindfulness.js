@@ -1,6 +1,10 @@
 // Mindfulness and Focus Controller for Mental Wellness Tracker (MWT)
 
 // Dynamic Audio Synthesizer using Web Audio API (for zero-dependency chimes)
+/**
+ * Plays a synthesized audio notification using the Web Audio API.
+ * @param {'success'|'break'|'alert'} [type='success'] - The chime type key
+ */
 function playChime(type = 'success') {
   try {
     const AudioContext = window.AudioContext || window.webkitAudioContext;

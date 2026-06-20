@@ -86,6 +86,12 @@ const SIMULATED_RESPONSES = {
   ]
 };
 
+/**
+ * Performs a simulated mental wellness analysis of journal entries offline.
+ * @param {string} text - The journal content
+ * @param {number} userMood - The student's self-logged mood rating (1-5)
+ * @returns {{ sentiment: string, triggers: string[], summary: string, coping: string[] }}
+ */
 function performSimulatedAnalysis(text, userMood) {
   const lowercaseText = text.toLowerCase();
   const matchedTriggers = [];
@@ -155,6 +161,11 @@ function performSimulatedAnalysis(text, userMood) {
   };
 }
 
+/**
+ * Generates a local offline chat response using heuristic keyword triggers.
+ * @param {Array<{role: string, content: string}>} messageHistory - The chat thread history
+ * @returns {{ content: string, isSafetyAlert?: boolean }}
+ */
 function generateSimulatedChatResponse(messageHistory) {
   const latestMessage = messageHistory[messageHistory.length - 1].content.toLowerCase();
 
@@ -183,6 +194,11 @@ function generateSimulatedChatResponse(messageHistory) {
 }
 
 // --- Clean and Parse JSON Helper ---
+/**
+ * Strips markdown JSON wrappers and parses raw text into a JSON object.
+ * @param {string} rawText - The raw response string from the model
+ * @returns {Object} The parsed JSON object
+ */
 function cleanAndParseJSON(rawText) {
   let cleaned = rawText.trim();
   // Strip markdown code block wrappers if present (e.g. ```json ... ```)
@@ -193,6 +209,14 @@ function cleanAndParseJSON(rawText) {
 }
 
 // --- Live OpenRouter API Integration ---
+/**
+ * Calls the OpenRouter completions API endpoint.
+ * @param {Array<{role: string, content: string}>} messages - The formatted chat messages
+ * @param {string} apiKey - The OpenRouter API key
+ * @param {string} model - The model endpoint string to request
+ * @param {boolean} [jsonMode=false] - Enforce structured JSON object response format
+ * @returns {Promise<string>} The string completion content
+ */
 async function callOpenRouterAPI(messages, apiKey, model, jsonMode = false) {
   const url = 'https://openrouter.ai/api/v1/chat/completions';
   
@@ -231,6 +255,14 @@ async function callOpenRouterAPI(messages, apiKey, model, jsonMode = false) {
 }
 
 // --- Live Gemini API Integration ---
+/**
+ * Calls the Google Gemini content generation API key endpoint.
+ * @param {string} systemInstruction - The system directives for the agent
+ * @param {string} prompt - The student prompt payload
+ * @param {string} apiKey - The Gemini API key
+ * @param {boolean} [jsonMode=false] - Enforce structured JSON format
+ * @returns {Promise<string>} The completion output string
+ */
 async function callGeminiAPI(systemInstruction, prompt, apiKey, jsonMode = false) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 

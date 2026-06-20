@@ -10,6 +10,11 @@ const decodeKey = (base64) => {
 
 export const DEFAULT_OR_KEY = decodeKey('c2stb3ItdjEtZTAyMGFkMjAxM2I4MDJiYTMxOTlmMjdhMjdlODAwMGQyOTVjYjJjZjcxMTA0ZDc1ZmU5MjMzMDFhZDE2MDI3MA==');
 
+/**
+ * Escapes HTML character sequences to prevent Cross-Site Scripting (XSS).
+ * @param {string} str - The target string to escape
+ * @returns {string} The escaped safe HTML string
+ */
 export function escapeHTML(str) {
   if (!str) return '';
   return str

@@ -145,8 +145,8 @@ export const dashboard = {
             ticks: {
               stepSize: 1,
               callback: function(value) {
-                const labels = ['', '😫 Highly Stressed', '😕 Anxious', '😐 Neutral', '😊 Relaxed', '🧘 Highly Calm'];
-                return labels[value];
+                const moodLabels = ['', '😫 Highly Stressed', '😕 Anxious', '😐 Neutral', '😊 Relaxed', '🧘 Highly Calm'];
+                return moodLabels[value];
               },
               color: '#94a3b8'
             },
