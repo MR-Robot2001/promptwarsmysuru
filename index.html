@@ -21,29 +21,29 @@
     <!-- SIDEBAR NAVIGATION -->
     <aside class="sidebar" aria-label="Main Navigation">
       <div class="logo-section">
-        <div class="logo-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+        <div class="logo-icon"><i class="fa-solid fa-heart-pulse" aria-hidden="true"></i></div>
         <span class="logo-text">Aura</span>
       </div>
       
       <nav aria-label="App Navigation">
         <ul class="nav-links">
           <li class="nav-item active" id="nav-dashboard-li">
-            <button id="btn-nav-dashboard" aria-label="Go to Dashboard"><i class="fa-solid fa-chart-simple"></i> Dashboard</button>
+            <button id="btn-nav-dashboard" aria-label="Go to Dashboard"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i> Dashboard</button>
           </li>
           <li class="nav-item" id="nav-journal-li">
-            <button id="btn-nav-journal" aria-label="Go to Journal and AI Coach"><i class="fa-solid fa-pen-nib"></i> Journal & AI</button>
+            <button id="btn-nav-journal" aria-label="Go to Journal and AI Coach"><i class="fa-solid fa-pen-nib" aria-hidden="true"></i> Journal & AI</button>
           </li>
           <li class="nav-item" id="nav-mindfulness-li">
-            <button id="btn-nav-mindfulness" aria-label="Go to Mindfulness Center"><i class="fa-solid fa-spa"></i> Mindfulness</button>
+            <button id="btn-nav-mindfulness" aria-label="Go to Mindfulness Center"><i class="fa-solid fa-spa" aria-hidden="true"></i> Mindfulness</button>
           </li>
           <li class="nav-item" id="nav-chat-li">
-            <button id="btn-nav-chat" aria-label="Go to Calm Companion Chat"><i class="fa-solid fa-comments"></i> CalmCompanion</button>
+            <button id="btn-nav-chat" aria-label="Go to Calm Companion Chat"><i class="fa-solid fa-comments" aria-hidden="true"></i> CalmCompanion</button>
           </li>
           <li class="nav-item" id="nav-diagnostics-li">
-            <button id="btn-nav-diagnostics" aria-label="Go to Developer Diagnostics"><i class="fa-solid fa-vial"></i> Diagnostics</button>
+            <button id="btn-nav-diagnostics" aria-label="Go to Developer Diagnostics"><i class="fa-solid fa-vial" aria-hidden="true"></i> Diagnostics</button>
           </li>
           <li class="nav-item" id="nav-settings-li">
-            <button id="btn-nav-settings" aria-label="Go to App Settings"><i class="fa-solid fa-sliders"></i> Settings</button>
+            <button id="btn-nav-settings" aria-label="Go to App Settings"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Settings</button>
           </li>
         </ul>
       </nav>
@@ -70,7 +70,7 @@
         </div>
         <div class="top-actions">
           <button class="theme-toggle" id="btn-theme-toggle" title="Toggle Dark/Light Mode" aria-label="Toggle Dark or Light Mode">
-            <i class="fa-solid fa-sun" id="icon-theme"></i>
+            <i class="fa-solid fa-sun" aria-hidden="true" id="icon-theme"></i>
           </button>
         </div>
       </header>
@@ -89,7 +89,7 @@
 
           <!-- Study-Wellness Index Ring -->
           <div class="glass-card col-4">
-            <h3 class="dashboard-card-title"><i class="fa-solid fa-scale-balanced text-secondary"></i> Study-Wellness Balance</h3>
+            <h3 class="dashboard-card-title"><i class="fa-solid fa-scale-balanced text-secondary" aria-hidden="true"></i> Study-Wellness Balance</h3>
             <div class="balance-widget-flex">
               <div class="balance-score-ring">
                 <div class="balance-score-circle" id="balance-conic">
@@ -119,7 +119,7 @@
 
           <!-- Quick Mood Logger -->
           <div class="glass-card col-4">
-            <h3 class="dashboard-card-title"><i class="fa-solid fa-face-smile text-secondary"></i> Daily Mood Log</h3>
+            <h3 class="dashboard-card-title"><i class="fa-solid fa-face-smile text-secondary" aria-hidden="true"></i> Daily Mood Log</h3>
             <div class="mood-picker-flex" role="group" aria-label="Mood Logger Selector">
               <button class="mood-btn" data-mood="1" aria-label="Feeling 😫 Highly Stressed"><span class="mood-emoji">😫</span><span class="mood-label">Stressed</span></button>
               <button class="mood-btn" data-mood="2" aria-label="Feeling 😕 Anxious"><span class="mood-emoji">😕</span><span class="mood-label">Anxious</span></button>
@@ -132,14 +132,14 @@
 
           <!-- Quick Breathing Guide Shortcut -->
           <div class="glass-card col-4 quote-card">
-            <h3 class="dashboard-card-title"><i class="fa-solid fa-quote-left text-secondary"></i> Aspirant Affirmation</h3>
+            <h3 class="dashboard-card-title"><i class="fa-solid fa-quote-left text-secondary" aria-hidden="true"></i> Aspirant Affirmation</h3>
             <p class="quote-text" id="lbl-dashboard-quote">"Your potential is not limited by a single mock test score. Keep pushing forward."</p>
             <p class="quote-author">— Daily Focus Guide</p>
           </div>
 
           <!-- Weekly Mood Chart -->
           <div class="glass-card col-8">
-            <h3 class="dashboard-card-title"><i class="fa-solid fa-chart-line text-secondary"></i> Emotional Well-being Timeline</h3>
+            <h3 class="dashboard-card-title"><i class="fa-solid fa-chart-line text-secondary" aria-hidden="true"></i> Emotional Well-being Timeline</h3>
             <div class="chart-container">
               <canvas id="chart-mood"></canvas>
             </div>
@@ -147,7 +147,7 @@
 
           <!-- Stress Triggers Chart -->
           <div class="glass-card col-4">
-            <h3 class="dashboard-card-title"><i class="fa-solid fa-triangle-exclamation text-secondary"></i> Stress Triggers (AI Identified)</h3>
+            <h3 class="dashboard-card-title"><i class="fa-solid fa-triangle-exclamation text-secondary" aria-hidden="true"></i> Stress Triggers (AI Identified)</h3>
             <div class="chart-container">
               <canvas id="chart-triggers"></canvas>
             </div>
@@ -179,7 +179,7 @@
                   <option value="1">😫 1 - Burnt Out / Anxious</option>
                 </select>
               </div>
-              <button class="btn-primary" id="btn-analyze-journal"><i class="fa-solid fa-wand-magic-sparkles"></i> Analyze Log</button>
+              <button class="btn-primary" id="btn-analyze-journal"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Analyze Log</button>
             </div>
           </div>
 
@@ -198,7 +198,7 @@
             <div class="analysis-section">
               <span class="analysis-section-title">Detected Triggers</span>
               <div class="trigger-chips-flex" id="container-triggers-chips">
-                <span class="trigger-chip" style="color: var(--text-muted);"><i class="fa-solid fa-clock"></i> Awaiting insights</span>
+                <span class="trigger-chip" style="color: var(--text-muted);"><i class="fa-solid fa-clock" aria-hidden="true"></i> Awaiting insights</span>
               </div>
             </div>
 
@@ -227,7 +227,7 @@
           
           <!-- Box Breathing Bubble Component -->
           <div class="glass-card breathing-card" id="card-breathing-workspace">
-            <h2 style="position: absolute; top: 1.5rem; left: 1.5rem;"><i class="fa-solid fa-circle-notch"></i> Box Breathing Cycle</h2>
+            <h2 style="position: absolute; top: 1.5rem; left: 1.5rem;"><i class="fa-solid fa-circle-notch" aria-hidden="true"></i> Box Breathing Cycle</h2>
             
             <div class="breathing-ring-outer">
               <div class="breathing-circle-glow" id="breath-glow"></div>
@@ -240,9 +240,9 @@
             <div class="breathing-subtext" id="lbl-breath-subtext">Balances nervous system & clears pre-exam jitters</div>
 
             <div class="breathing-controls">
-              <button class="btn-primary" id="btn-breathing-start"><i class="fa-solid fa-play"></i> Start</button>
-              <button class="btn-secondary" id="btn-breathing-pause" style="display:none;"><i class="fa-solid fa-pause"></i> Pause</button>
-              <button class="btn-secondary" id="btn-breathing-reset"><i class="fa-solid fa-arrow-rotate-left"></i> Reset</button>
+              <button class="btn-primary" id="btn-breathing-start"><i class="fa-solid fa-play" aria-hidden="true"></i> Start</button>
+              <button class="btn-secondary" id="btn-breathing-pause" style="display:none;"><i class="fa-solid fa-pause" aria-hidden="true"></i> Pause</button>
+              <button class="btn-secondary" id="btn-breathing-reset"><i class="fa-solid fa-arrow-rotate-left" aria-hidden="true"></i> Reset</button>
             </div>
           </div>
 
@@ -261,9 +261,9 @@
             <div class="timer-label" id="lbl-timer-mode-text">Study Focus</div>
 
             <div class="timer-controls">
-              <button class="btn-primary" id="btn-timer-start"><i class="fa-solid fa-play"></i> Start</button>
-              <button class="btn-secondary" id="btn-timer-pause" style="display:none;"><i class="fa-solid fa-pause"></i> Pause</button>
-              <button class="btn-secondary" id="btn-timer-reset"><i class="fa-solid fa-arrow-rotate-left"></i> Reset</button>
+              <button class="btn-primary" id="btn-timer-start"><i class="fa-solid fa-play" aria-hidden="true"></i> Start</button>
+              <button class="btn-secondary" id="btn-timer-pause" style="display:none;"><i class="fa-solid fa-pause" aria-hidden="true"></i> Pause</button>
+              <button class="btn-secondary" id="btn-timer-reset"><i class="fa-solid fa-arrow-rotate-left" aria-hidden="true"></i> Reset</button>
             </div>
             
             <p style="font-size: 0.8rem; margin-top: 1.5rem; color: var(--text-muted);" id="lbl-completed-sessions">Completed Focus Sessions: 0</p>
@@ -311,7 +311,7 @@
             
             <form class="chat-input-row" id="form-chat" onsubmit="return false;">
               <input type="text" class="chat-input" id="input-chat-message" placeholder="Talk to CalmCompanion..." autocomplete="off" aria-label="Message for CalmCompanion">
-              <button type="submit" class="chat-send-btn" id="btn-chat-send" aria-label="Send message"><i class="fa-solid fa-paper-plane"></i></button>
+              <button type="submit" class="chat-send-btn" id="btn-chat-send" aria-label="Send message"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
             </form>
           </div>
 
@@ -324,7 +324,7 @@
           <h2>Developer Diagnostics & Unit Tests</h2>
           <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Verify system stability, database transactions, simulated GenAI parsing, and timers directly inside the browser environment.</p>
           
-          <button class="btn-primary" id="btn-run-diagnostics"><i class="fa-solid fa-circle-play"></i> Execute Automated Tests</button>
+          <button class="btn-primary" id="btn-run-diagnostics"><i class="fa-solid fa-circle-play" aria-hidden="true"></i> Execute Automated Tests</button>
           
           <table class="diagnostics-table">
             <thead>
@@ -412,8 +412,8 @@
           </div>
 
           <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-            <button class="btn-primary" id="btn-save-settings"><i class="fa-solid fa-floppy-disk"></i> Save Settings</button>
-            <button class="btn-secondary" id="btn-reset-data" style="color: var(--color-danger); border-color: rgba(239, 68, 68, 0.3);"><i class="fa-solid fa-trash-can"></i> Delete All Data</button>
+            <button class="btn-primary" id="btn-save-settings"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Save Settings</button>
+            <button class="btn-secondary" id="btn-reset-data" style="color: var(--color-danger); border-color: rgba(239, 68, 68, 0.3);"><i class="fa-solid fa-trash-can" aria-hidden="true"></i> Delete All Data</button>
           </div>
         </div>
       </section>
@@ -425,7 +425,7 @@
   <div class="setup-overlay" id="overlay-setup" style="display: none;">
     <section class="setup-card" aria-label="Create Your Profile">
       <div class="setup-header">
-        <div class="logo-icon" style="margin: 0 auto 1rem; width: 50px; height: 50px; font-size: 1.5rem;"><i class="fa-solid fa-heart-pulse"></i></div>
+        <div class="logo-icon" style="margin: 0 auto 1rem; width: 50px; height: 50px; font-size: 1.5rem;"><i class="fa-solid fa-heart-pulse" aria-hidden="true"></i></div>
         <h2>Welcome to Aura</h2>
         <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">A Generative AI-powered mental wellness companion tailored for exam aspirants</p>
       </div>
@@ -459,14 +459,14 @@
   <!-- GUIDED WALKTHROUGH OVERLAY -->
   <div class="guided-overlay" id="overlay-guided" style="display: none;">
     <section class="guided-card" aria-label="Guided Relaxation Exercise">
-      <h2 id="lbl-guided-title" style="color: var(--color-secondary);"><i class="fa-solid fa-spa"></i> Pre-Exam Calm Down</h2>
+      <h2 id="lbl-guided-title" style="color: var(--color-secondary);"><i class="fa-solid fa-spa" aria-hidden="true"></i> Pre-Exam Calm Down</h2>
       <div class="guided-step-text" id="lbl-guided-text">Sit comfortably and scan your shoulders. Feel them loosen.</div>
       
       <div class="guided-progress-bar">
         <div class="guided-progress-fill" id="fill-guided-progress"></div>
       </div>
       
-      <button class="btn-secondary" id="btn-guided-skip"><i class="fa-solid fa-xmark"></i> Close Exercise</button>
+      <button class="btn-secondary" id="btn-guided-skip"><i class="fa-solid fa-xmark" aria-hidden="true"></i> Close Exercise</button>
     </section>
   </div>
 

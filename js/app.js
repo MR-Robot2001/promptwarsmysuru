@@ -1,20 +1,9 @@
 // Main Application Controller for Mental Wellness Tracker (MWT)
-import { db, DEFAULT_OR_KEY } from './db.js';
+import { db, DEFAULT_OR_KEY, escapeHTML } from './db.js';
 import { ai, SAFETY_KEYWORDS } from './ai.js';
 import { mindfulness } from './mindfulness.js';
 import { dashboard } from './dashboard.js';
 import { tests } from './tests.js';
-
-// Safe XSS Prevention Escape Utility
-function escapeHTML(str) {
-  if (!str) return '';
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
 
 // Global variables for active timers
 let activeBoxBreathing = null;
@@ -324,7 +313,7 @@ function initJournal() {
 
     // Set Loading state
     analyzeBtn.disabled = true;
-    analyzeBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Analyzing Log...`;
+    analyzeBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Analyzing Log...`;
     document.getElementById('lbl-sentiment-badge').textContent = 'Processing...';
 
     try {
@@ -350,7 +339,7 @@ function initJournal() {
       alert('Failed to analyze journal. Please verify your settings or internet connection.');
     } finally {
       analyzeBtn.disabled = false;
-      analyzeBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Analyze Log`;
+      analyzeBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Analyze Log`;
     }
   });
 
@@ -386,7 +375,7 @@ function renderJournalAnalysisResults(result) {
   result.triggers.forEach(trigger => {
     const chip = document.createElement('span');
     chip.className = 'trigger-chip';
-    chip.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${escapeHTML(trigger)}`;
+    chip.innerHTML = `<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> ${escapeHTML(trigger)}`;
     chipsContainer.appendChild(chip);
   });
 
@@ -420,13 +409,13 @@ function renderJournalHistory() {
     });
 
     const triggersChips = entry.analysis?.triggers 
-      ? entry.analysis.triggers.map(t => `<span class="trigger-chip" style="padding: 0.15rem 0.5rem; font-size: 0.7rem; border-color: rgba(20,184,166,0.3);"><i class="fa-solid fa-hashtag"></i> ${escapeHTML(t)}</span>`).join(' ')
+      ? entry.analysis.triggers.map(t => `<span class="trigger-chip" style="padding: 0.15rem 0.5rem; font-size: 0.7rem; border-color: rgba(20,184,166,0.3);"><i class="fa-solid fa-hashtag" aria-hidden="true"></i> ${escapeHTML(t)}</span>`).join(' ')
       : '';
 
     div.innerHTML = `
       <div class="entry-left">
         <div class="entry-meta">
-          <span><i class="fa-regular fa-calendar-days"></i> ${dateFormatted}</span>
+          <span><i class="fa-regular fa-calendar-days" aria-hidden="true"></i> ${dateFormatted}</span>
           <span>Mood: ${entry.moodScore}/5</span>
           ${entry.analysis?.sentiment ? `<span style="color: var(--color-primary); font-weight: 600;">• ${escapeHTML(entry.analysis.sentiment)}</span>` : ''}
         </div>
@@ -439,7 +428,7 @@ function renderJournalHistory() {
         ` : ''}
       </div>
       <div class="entry-actions">
-        <button class="delete-entry-btn" data-id="${entry.id}" title="Delete entry" aria-label="Delete Journal Entry"><i class="fa-solid fa-trash-can"></i></button>
+        <button class="delete-entry-btn" data-id="${entry.id}" title="Delete entry" aria-label="Delete Journal Entry"><i class="fa-solid fa-trash-can" aria-hidden="true"></i></button>
       </div>
     `;
 
@@ -568,7 +557,7 @@ function renderGuidedExercises() {
     const card = document.createElement('div');
     card.className = 'glass-card exercise-card';
     card.innerHTML = `
-      <div class="exercise-icon"><i class="fa-solid ${value.icon}"></i></div>
+      <div class="exercise-icon"><i class="fa-solid ${value.icon}" aria-hidden="true"></i></div>
       <div class="exercise-desc">
         <h3 class="exercise-title">${value.title}</h3>
         <p class="exercise-meta">${value.duration} • ${value.description}</p>
@@ -588,7 +577,7 @@ function startGuidedWalkthrough(exercise) {
   const overlay = document.getElementById('overlay-guided');
   overlay.style.display = 'flex';
 
-  document.getElementById('lbl-guided-title').innerHTML = `<i class="fa-solid fa-spa"></i> ${exercise.title}`;
+  document.getElementById('lbl-guided-title').innerHTML = `<i class="fa-solid fa-spa" aria-hidden="true"></i> ${escapeHTML(exercise.title)}`;
 
   let currentStepIndex = 0;
   const steps = exercise.steps;
@@ -755,9 +744,9 @@ function initDiagnostics() {
 
   runBtn.addEventListener('click', async () => {
     runBtn.disabled = true;
-    runBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Executing Diagnostic Suites...`;
+    runBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Executing Diagnostic Suites...`;
     
-    resultsContainer.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 2.5rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem; display:block;"></i> Running unit test suites...</td></tr>`;
+    resultsContainer.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 2.5rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem; display:block;" aria-hidden="true"></i> Running unit test suites...</td></tr>`;
 
     try {
       const testReport = await tests.runAll();
@@ -779,7 +768,7 @@ function initDiagnostics() {
       resultsContainer.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--color-danger); font-weight: 600; padding: 2rem;">Diagnostics Fatal Crash: ${e.message}</td></tr>`;
     } finally {
       runBtn.disabled = false;
-      runBtn.innerHTML = `<i class="fa-solid fa-circle-play"></i> Execute Automated Tests`;
+      runBtn.innerHTML = `<i class="fa-solid fa-circle-play" aria-hidden="true"></i> Execute Automated Tests`;
       
       // Update charts because test sandbox clear might have triggered changes
       updateDashboard();

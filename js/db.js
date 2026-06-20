@@ -10,6 +10,16 @@ const decodeKey = (base64) => {
 
 export const DEFAULT_OR_KEY = decodeKey('c2stb3ItdjEtZTAyMGFkMjAxM2I4MDJiYTMxOTlmMjdhMjdlODAwMGQyOTVjYjJjZjcxMTA0ZDc1ZmU5MjMzMDFhZDE2MDI3MA==');
 
+export function escapeHTML(str) {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 const DB_KEYS = {
   PROFILE: 'mwt_user_profile',
   MOOD_LOGS: 'mwt_mood_logs',

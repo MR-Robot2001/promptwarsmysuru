@@ -1,5 +1,5 @@
 // Automated Unit Testing Suite for Mental Wellness Tracker (MWT)
-import { db } from './db.js';
+import { db, escapeHTML } from './db.js';
 import { dashboard } from './dashboard.js';
 import { ai } from './ai.js';
 import { mindfulness } from './mindfulness.js';
@@ -82,6 +82,11 @@ export const tests = {
       const burnout = dashboard.calculateBalanceIndex(14, 4, 0); // 14h study, 4h sleep, 0m relaxation
       assert(burnout.totalIndex < 40, `Burnout score should be low, got ${burnout.totalIndex}`);
       assert(burnout.rating.text.includes('Burnout'), 'Burnout rating description mismatch');
+
+      // Test moderate stress risk case
+      const moderate = dashboard.calculateBalanceIndex(10, 6, 15); // 10h study, 6h sleep, 15m relaxation
+      assert(moderate.totalIndex >= 45 && moderate.totalIndex < 65, `Moderate score should be between 45 and 64, got ${moderate.totalIndex}`);
+      assert(moderate.rating.text.includes('Moderate'), 'Moderate rating description mismatch');
     });
 
     // 3. AI Tests
@@ -121,6 +126,22 @@ export const tests = {
       const history = [{ role: 'user', content: 'Respond with exactly the word OK' }];
       const response = await ai.generateChatResponse(history);
       assert(response.content && response.content.trim().length > 0, 'OpenRouter did not return text content');
+    });
+
+    // 4. Security & Sanitization Tests
+    await runTest('Security: Obfuscated API key decoding validation', () => {
+      const decodedKey = db.getSettings().openRouterKey;
+      assert(decodedKey.startsWith('sk-or-v1-'), 'Key format should start with sk-or-v1-');
+      assert(decodedKey.length === 73, 'Decoded key should have exact correct length');
+    });
+
+    await runTest('Security: XSS Sanitization helper validation', () => {
+      const hazardous = '<script>alert("XSS")</script> & "quotes"';
+      const clean = escapeHTML(hazardous);
+      assert(!clean.includes('<'), 'Should escape less-than brackets');
+      assert(!clean.includes('>'), 'Should escape greater-than brackets');
+      assert(clean.includes('&lt;script&gt;'), 'Should correctly encode tags');
+      assert(clean.includes('&amp;'), 'Should escape ampersands');
     });
 
     // 4. Mindfulness POMODORO State Machine
